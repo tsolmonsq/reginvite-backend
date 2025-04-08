@@ -8,7 +8,10 @@ async function bootstrap() {
 
   // Enable CORS for the frontend URL
   app.enableCors({
-    origin: 'http://localhost:3000', // Frontend's URL (adjust if needed)
+    origin: 'http://localhost:3000',
+    credentials: true, // if you're using cookies or authentication
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Accept',
   });
 
   const config = new DocumentBuilder()
