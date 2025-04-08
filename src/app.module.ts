@@ -10,6 +10,7 @@ import { Event } from './events/event.entity';
 import { EventsModule } from './events/events.module';
 import { GuestsModule } from './guests/guests.module';
 import { User } from './users/user.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { User } from './users/user.entity';
     EmailModule,
     UserModule,
     EventsModule,
-    GuestsModule
+    GuestsModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
