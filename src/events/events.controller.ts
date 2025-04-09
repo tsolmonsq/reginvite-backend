@@ -40,13 +40,13 @@ export class EventController {
   @Post()
   @UseInterceptors(FileInterceptor('image', {
     storage: diskStorage({
-      destination: './uploads',
+      destination: '/Users/tsolmonbatbold/reginvite/event-images',
       filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
         const ext = file.originalname.split('.').pop();
         cb(null, `${file.fieldname}-${uniqueSuffix}.${ext}`);
       },
-    }),
+    })
   }))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -61,13 +61,13 @@ export class EventController {
     const userId = req.user.id;
     const organizer = await this.organizerService.findByUserId(userId);
   
-    const imagePath = file?.filename ? `uploads/${file.filename}` : "";
-    console.log('✅ Final imagePath:', imagePath);
+    const imagePath = file?.filename ? `event-images/${file.filename}` : "";
   
     return this.eventService.create(dto, imagePath, organizer.id);
   }  
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   async findAll(@Req() req: any) {
     const userId = req.user.id;
     const organizer = await this.organizerService.findByUserId(userId);

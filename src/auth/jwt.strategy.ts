@@ -1,4 +1,3 @@
-// src/auth/jwt.strategy.ts
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -7,14 +6,15 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req) => req?.cookies?.token,
+      ]),
       ignoreExpiration: false,
-      secretOrKey: 'supersecretkey', // эсвэл process.env.JWT_SECRET
+      secretOrKey: 'supersecretkey',
     });
   }
 
   async validate(payload: any) {
-    // JWT payload → req.user рүү дамжина
     return { id: payload.sub, email: payload.email };
   }
 }
