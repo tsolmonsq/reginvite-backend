@@ -7,9 +7,6 @@ export class Guest {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Event, (event) => event.guests)
-  event: Event;
-
   @Column()
   firstname: string;
 
@@ -30,4 +27,7 @@ export class Guest {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToOne(() => Event, (event) => event.guests)
+  event: Event;
 }

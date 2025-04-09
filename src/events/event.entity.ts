@@ -1,5 +1,13 @@
-// src/events/event.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
+import { Organizer } from 'src/organizers/organizer.entity';
 import { Guest } from 'src/guests/guest.entity';
 
 @Entity()
@@ -8,28 +16,31 @@ export class Event {
   id: number;
 
   @Column()
-  organizer_id: number;
+  title: string; // Арга хэмжээний нэр
+
+  @Column({ nullable: true, type: 'text' })
+  description: string; // Дэлгэрэнгүй мэдээлэл
 
   @Column()
-  title: string;
+  location: string; 
+
+  @Column({ type: 'timestamp',  nullable: true })
+  start_time: Date; 
+
+  @Column({ type: 'timestamp',  nullable: true })
+  end_time: Date; 
 
   @Column({ nullable: true })
-  description: string;
-
-  @Column({ nullable: true })
-  location: string;
-
-  @Column('timestamptz')
-  start_time: Date;
-
-  @Column('timestamptz')
-  end_time: Date;
+  imagePath: string; 
 
   @CreateDateColumn()
   created_at: Date;
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToOne(() => Organizer, (organizer) => organizer.events)
+  organizer: Organizer;
 
   @OneToMany(() => Guest, (guest) => guest.event)
   guests: Guest[];

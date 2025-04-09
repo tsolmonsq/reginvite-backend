@@ -14,16 +14,7 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
-    const { access_token, user } = await this.authService.login(dto);
-
-    res.cookie('token', access_token, {
-      httpOnly: true, // ✅ prevents JS access
-      secure: false,  // 🔒 true if HTTPS (production)
-      sameSite: 'lax',
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    });
-
-    return { message: 'Нэвтэрсэн', user };
+  login(@Body() dto: LoginDto) {
+    return this.authService.login(dto); 
   }
 }

@@ -13,7 +13,7 @@ export class CreateUserDto {
   @ApiProperty({ example: 'Doe' })
   last_name: string;
 
-  @ApiProperty({ example: '+1234567890', required: false })
+  @ApiProperty({ example: '99180293', required: false })
   phone?: string;
 
   @ApiProperty({ example: 'admin' })

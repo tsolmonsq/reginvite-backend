@@ -7,10 +7,15 @@ import { EmailModule } from './email/email.module';
 import { UserModule } from './users/users.module';
 import { Guest } from './guests/guest.entity';
 import { Event } from './events/event.entity';
-import { EventsModule } from './events/events.module';
+import { EventModule } from './events/events.module';
 import { GuestsModule } from './guests/guests.module';
 import { User } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
+import { OrganizersService } from './organizers/organizers.service';
+import { OrganizersModule } from './organizers/organizers.module';
+import { Organizer } from './organizers/organizer.entity';
+import { MulterModule } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 
 @Module({
   imports: [
@@ -21,17 +26,28 @@ import { AuthModule } from './auth/auth.module';
       username: 'tsolmonbatbold',
       password: '11081108',
       database: 'reginvite',
-      entities: [User, Event, Guest],
-      synchronize: false, // Set to false for production
+      entities: [User, Organizer, Event, Guest],
+      synchronize: true, // Set to false for production
+    }),
+    MulterModule.register({
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = file.originalname.split('.').pop();
+          cb(null, `${file.fieldname}-${uniqueSuffix}.${ext}`);
+        },
+      }),
     }),
     ConfigModule.forRoot(),
     EmailModule,
     UserModule,
-    EventsModule,
+    EventModule,
     GuestsModule,
-    AuthModule
+    AuthModule,
+    OrganizersModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, OrganizersService],
 })
 export class AppModule {}
