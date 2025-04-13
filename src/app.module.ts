@@ -27,7 +27,7 @@ import { diskStorage } from 'multer';
       password: '11081108',
       database: 'reginvite',
       entities: [User, Organizer, Event, Guest],
-      synchronize: true, // Set to false for production
+      synchronize: false, // Set to false for production
     }),
     MulterModule.register({
       storage: diskStorage({

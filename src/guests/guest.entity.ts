@@ -1,6 +1,12 @@
-// src/guests/guest.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, UpdateDateColumn, CreateDateColumn } from 'typeorm';
-import { Event } from '../events/event.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Event } from 'src/events/event.entity';
 
 @Entity()
 export class Guest {
@@ -8,26 +14,29 @@ export class Guest {
   id: number;
 
   @Column()
-  firstname: string;
+  first_name: string;
 
   @Column()
-  lastname: string;
+  last_name: string;
 
-  @Column({ nullable: true })
+  @Column()
   email: string;
 
   @Column({ nullable: true })
   phone: string;
 
-  @Column({ nullable: true })
-  status: string;
+  @Column({ default: 'New' })
+  status: 'Sent' | 'Pending' | 'Failed' | 'By form' | 'New';
+
+  @Column({ type: 'uuid', default: () => 'gen_random_uuid()' })
+  qr_token: string;
+
+  @ManyToOne(() => Event, (event) => event.guests, { onDelete: 'CASCADE' })
+  event: Event;
 
   @CreateDateColumn()
   created_at: Date;
 
   @UpdateDateColumn()
   updated_at: Date;
-
-  @ManyToOne(() => Event, (event) => event.guests)
-  event: Event;
 }
