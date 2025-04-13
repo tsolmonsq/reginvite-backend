@@ -16,6 +16,8 @@ import { OrganizersModule } from './organizers/organizers.module';
 import { Organizer } from './organizers/organizer.entity';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { InvitationTemplate } from './invitation-template/invitation-template.entity';
+import { InvitationTemplateModule } from './invitation-template/invitation-template.module';
 
 @Module({
   imports: [
@@ -26,8 +28,8 @@ import { diskStorage } from 'multer';
       username: 'tsolmonbatbold',
       password: '11081108',
       database: 'reginvite',
-      entities: [User, Organizer, Event, Guest],
-      synchronize: false, // Set to false for production
+      entities: [User, Organizer, Event, Guest, InvitationTemplate],
+      synchronize: false,
     }),
     MulterModule.register({
       storage: diskStorage({
@@ -45,7 +47,8 @@ import { diskStorage } from 'multer';
     EventModule,
     GuestsModule,
     AuthModule,
-    OrganizersModule
+    OrganizersModule,
+    InvitationTemplateModule
   ],
   controllers: [AppController],
   providers: [AppService, OrganizersService],

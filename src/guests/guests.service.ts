@@ -1,10 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Guest } from './guest.entity';
 import { CreateGuestDto } from './dto/create-guest.dto';
 import { UpdateGuestDto } from './dto/update-guest.dto';
 import { Event } from 'src/events/event.entity';
+import { EmailService } from 'src/email/email.service';
+import { InvitationTemplate } from 'src/invitation-template/invitation-template.entity';
+import { QRCodeService } from 'src/qr/qr-code.service';
 
 @Injectable()
 export class GuestsService {
@@ -14,6 +17,13 @@ export class GuestsService {
 
     @InjectRepository(Event)
     private eventRepo: Repository<Event>,
+    
+    @InjectRepository(InvitationTemplate) // 👈 add this
+    private templateRepo: Repository<InvitationTemplate>,
+
+    private emailService: EmailService,
+
+    private qrCodeService: QRCodeService,
   ) {}
 
   async create(createGuestDto: CreateGuestDto) {
@@ -77,6 +87,51 @@ export class GuestsService {
 
   findOne(id: number) {
     return this.guestRepo.findOneBy({ id });
+  }
+
+  async sendInvitations(
+    guestIds: number[],
+    templateId: number
+  ) {
+    const guests = await this.guestRepo.find({
+      where: { id: In(guestIds) },
+      relations: ['event'],
+    });
+  
+    const template = await this.templateRepo.findOneBy({ id: templateId });
+    if (!template) {
+      throw new NotFoundException('Template not found');
+    }
+  
+    for (const guest of guests) {
+      try {
+        const qrUrl = `http://localhost:3000/checkin/${guest.qr_token}`;
+        const qrImage = await this.qrCodeService.generateDataURL(qrUrl); 
+  
+        const html = template.html
+          .replaceAll('{{TITLE}}', guest.event.title || '')
+          .replaceAll('{{DESCRIPTION}}', guest.event.description || '')
+          .replaceAll('{{LOCATION}}', guest.event.location || '')
+          .replaceAll('{{START_TIME}}', guest.event.start_time?.toLocaleString('mn-MN') || '')
+          .replaceAll('{{END_TIME}}', guest.event.end_time?.toLocaleString('mn-MN') || '')
+          .replaceAll('{{COLOR}}', template.color || '')
+          .replaceAll('{{QR_SECTION}}', `<img src="${qrImage}" width="120" />`) 
+  
+        const subject = `Урилга: ${guest.event.title || 'Таны эвент'}`;
+  
+        await this.emailService.sendEmail(guest.email, subject, html);
+  
+      } catch (error) {
+        console.error('EMAIL ERROR:', error); 
+        await this.guestRepo.update(guest.id, { status: 'Failed' });
+      }
+    }
+  
+    return { message: 'Илгээх процесс амжилттай дууссан' };
+  }  
+
+  async findByToken(token: string) {
+    return this.guestRepo.findOneBy({ qr_token: token });
   }
 
   update(id: number, updateGuestDto: UpdateGuestDto) {

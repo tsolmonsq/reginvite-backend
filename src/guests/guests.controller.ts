@@ -8,12 +8,14 @@ import {
   Delete,
   Query,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { GuestsService } from './guests.service';
 import { CreateGuestDto } from './dto/create-guest.dto';
 import { UpdateGuestDto } from './dto/update-guest.dto';
-import { ApiTags, ApiResponse, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiQuery, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { SendInviteDto } from './dto/send-invites.dto';
 
 const allowedStatuses = ['New', 'By form', 'Sent', 'Pending', 'Failed'] as const;
 type GuestStatus = typeof allowedStatuses[number];
@@ -61,6 +63,25 @@ export class GuestsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.guestsService.findOne(+id);
+  }
+
+  @Post('send-invites')
+  @ApiResponse({ status: 201, description: 'Илгээх амжилттай' })
+  async sendInvites(@Body() dto: SendInviteDto) {
+    return this.guestsService.sendInvitations(dto.guestIds, dto.templateId);
+  }
+
+  @Get('checkin/:token')
+  async checkInGuest(@Param('token') token: string) {
+    const guest = await this.guestsService.findByToken(token);
+    
+    if (!guest) {
+      throw new NotFoundException('Guest not found');
+    }
+
+    await this.guestsService.update(guest.id, guest); 
+
+    return { message: 'Ирц амжилттай бүртгэгдлээ' };
   }
 
   @Put(':id')

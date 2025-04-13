@@ -4,11 +4,19 @@ import { GuestsController } from './guests.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Guest } from './guest.entity';
 import { Event } from 'src/events/event.entity';
+import { EmailService } from 'src/email/email.service';
+import { ConfigModule } from '@nestjs/config';
+import { InvitationTemplate } from 'src/invitation-template/invitation-template.entity';
+import { QRCodeModule } from 'src/qr/qr-code.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Guest, Event])],
+  imports: [
+    TypeOrmModule.forFeature([Guest, Event, InvitationTemplate]),
+    ConfigModule,
+    QRCodeModule
+  ],
   controllers: [GuestsController],
-  providers: [GuestsService],
+  providers: [GuestsService, EmailService],
   exports: [GuestsService],
 })
 export class GuestsModule {}

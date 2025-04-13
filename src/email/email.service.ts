@@ -1,5 +1,3 @@
-// src/email/email.service.ts
-
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
