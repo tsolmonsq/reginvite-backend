@@ -84,6 +84,11 @@ export class GuestsController {
     return { message: 'Ирц амжилттай бүртгэгдлээ' };
   }
 
+  @Post('/checkin/:token')
+  async checkInGuestPost(@Param('token') token: string) {
+    return this.guestsService.checkInByToken(token);
+  }
+
   @Put(':id')
   update(@Param('id') id: string, @Body() updateGuestDto: UpdateGuestDto) {
     return this.guestsService.update(+id, updateGuestDto);
