@@ -12,7 +12,7 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  app.use('/event-images', express.static('/Users/tsolmonbatbold/reginvite/event-images'));
+  app.use('/event-images', express.static(join(process.cwd(), 'event-images')));
   
   // Enable CORS for the frontend URL
   app.enableCors({
