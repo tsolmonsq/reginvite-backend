@@ -23,7 +23,7 @@ async function bootstrap() {
   });
 
   const configService = app.get(ConfigService);
-  const apiBaseUrl = configService.get<string>('API_BASE_URL') || 'http://localhost:3001';
+  const apiBaseUrl = configService.get<string>('BASE_URL') || 'http://localhost:3001';
 
   const config = new DocumentBuilder()
     .setTitle('API Documentation')
