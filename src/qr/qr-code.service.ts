@@ -13,6 +13,6 @@ export class QRCodeService {
 
     const filePath = path.join(qrDir, filename);
     await QRCode.toFile(filePath, text);
-    return `/qr/${filename}`; // Return public access path
+    return `/qr/${filename}`;
   }
 }

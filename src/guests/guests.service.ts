@@ -122,7 +122,7 @@ export class GuestsService {
           .replaceAll('{{START_TIME}}', guest.event.start_time?.toLocaleString('mn-MN') || '')
           .replaceAll('{{END_TIME}}', guest.event.end_time?.toLocaleString('mn-MN') || '')
           .replaceAll('{{COLOR}}', template.color || '')
-          .replaceAll('{{RSVP_SECTION}}', `<img src="${fullQrUrl}" width="120" alt="QR Code" />`);
+          .replaceAll('{{QR_SECTION}}', `<img src="${fullQrUrl}" width="120" alt="QR Code" />`);
   
         const subject = `Урилга: ${guest.event.title || 'Таны эвент'}`;
   
