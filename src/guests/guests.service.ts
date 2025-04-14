@@ -145,19 +145,50 @@ export class GuestsService {
   }
 
   async checkInByToken(token: string) {
-    const guest = await this.findByToken(token);
+    const guest = await this.guestRepo.findOne({
+      where: { qr_token: token },
+      relations: ['event'],
+    });
+  
     if (!guest) {
       throw new NotFoundException('Guest not found');
     }
   
     if (guest.checked_in) {
-      return { message: 'Зочин аль хэдийн ирсэн байна' };
+      return {
+        message: 'Зочин аль хэдийн ирсэн байна',
+        guest: {
+          id: guest.id,
+          first_name: guest.first_name,
+          last_name: guest.last_name,
+          email: guest.email,
+          checked_in: true,
+          event: {
+            id: guest.event.id,
+            title: guest.event.title,
+          },
+        },
+      };
     }
   
-    await this.update(guest.id, { checked_in: true });
+    guest.checked_in = true;
+    await this.guestRepo.save(guest);
   
-    return { message: 'Ирц амжилттай бүртгэгдлээ' };
-  }
+    return {
+      message: 'Ирц амжилттай бүртгэгдлээ',
+      guest: {
+        id: guest.id,
+        first_name: guest.first_name,
+        last_name: guest.last_name,
+        email: guest.email,
+        checked_in: true,
+        event: {
+          id: guest.event.id,
+          title: guest.event.title,
+        },
+      },
+    };
+  }  
   
   update(id: number, updateGuestDto: UpdateGuestDto) {
     return this.guestRepo.update(id, updateGuestDto);
