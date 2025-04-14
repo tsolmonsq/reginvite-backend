@@ -7,13 +7,21 @@ import { User } from 'src/users/user.entity';
 import { Organizer } from 'src/organizers/organizer.entity';
 import { JwtStrategy } from './jwt.strategy';
 import { OrganizersModule } from 'src/organizers/organizers.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Organizer]),
-    JwtModule.register({
-      secret: 'supersecretkey',
-      signOptions: { expiresIn: '1d' },
+    ConfigModule, // .env дэмжих
+    TypeOrmModule.forFeature([User, Organizer]),  
+
+    // JWT_SECRET-ийг env-ээс авч бүртгэх
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => ({
+        secret: config.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1d' },
+      }),
     }),
     OrganizersModule,
   ],
