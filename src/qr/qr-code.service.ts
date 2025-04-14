@@ -1,9 +1,18 @@
 import * as QRCode from 'qrcode';
+import * as fs from 'fs';
+import * as path from 'path';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class QRCodeService {
-  async generateDataURL(text: string): Promise<string> {
-    return QRCode.toDataURL(text); // base64 data:image/png үүсгэнэ
+  async generateImageFile(text: string, filename: string): Promise<string> {
+    const qrDir = path.join(__dirname, '..', '..', 'public', 'qr');
+    if (!fs.existsSync(qrDir)) {
+      fs.mkdirSync(qrDir, { recursive: true });
+    }
+
+    const filePath = path.join(qrDir, filename);
+    await QRCode.toFile(filePath, text);
+    return `/qr/${filename}`; // Return public access path
   }
 }

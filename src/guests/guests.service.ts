@@ -97,20 +97,24 @@ export class GuestsService {
       where: { id: In(guestIds) },
       relations: ['event'],
     });
-
+  
     const template = await this.templateRepo.findOneBy({ id: templateId });
     if (!template) {
       throw new NotFoundException('Template not found');
     }
-
-    const baseUrl = this.configService.get('BASE_URL'); 
-
+  
+    const baseUrl = this.configService.get('BASE_URL');
+  
     for (const guest of guests) {
       try {
-        const qrUrl = `${baseUrl}/guests/checkin/${guest.qr_token}`; 
-
-        const qrImage = await this.qrCodeService.generateDataURL(qrUrl); 
-
+        const qrUrl = `${baseUrl}/guests/checkin/${guest.qr_token}`;
+        const filename = `${guest.qr_token}.png`;
+  
+        // QR image үүсгээд хадгалах
+        const qrImagePath = await this.qrCodeService.generateImageFile(qrUrl, filename);
+        const fullQrUrl = `${baseUrl}${qrImagePath}`;
+  
+        // Урилгын HTML-ийг бүрдүүлэх
         const html = template.html
           .replaceAll('{{TITLE}}', guest.event.title || '')
           .replaceAll('{{DESCRIPTION}}', guest.event.description || '')
@@ -118,20 +122,23 @@ export class GuestsService {
           .replaceAll('{{START_TIME}}', guest.event.start_time?.toLocaleString('mn-MN') || '')
           .replaceAll('{{END_TIME}}', guest.event.end_time?.toLocaleString('mn-MN') || '')
           .replaceAll('{{COLOR}}', template.color || '')
-          .replaceAll('{{QR_SECTION}}', `<img src="${qrImage}" width="120" />`);
-
+          .replaceAll('{{RSVP_SECTION}}', `<img src="${fullQrUrl}" width="120" alt="QR Code" />`);
+  
         const subject = `Урилга: ${guest.event.title || 'Таны эвент'}`;
-
+  
         await this.emailService.sendEmail(guest.email, subject, html);
-
+  
+        // Амжилттай илгээсэн бол статусыг шинэчлэх
+        await this.guestRepo.update(guest.id, { status: 'Sent' });
+  
       } catch (error) {
-        console.error('EMAIL ERROR:', error); 
+        console.error('EMAIL ERROR:', error);
         await this.guestRepo.update(guest.id, { status: 'Failed' });
       }
     }
-
+  
     return { message: 'Илгээх процесс амжилттай дууссан' };
-  }
+  }  
 
   async findByToken(token: string) {
     return this.guestRepo.findOneBy({ qr_token: token });
