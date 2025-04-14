@@ -144,6 +144,21 @@ export class GuestsService {
     return this.guestRepo.findOneBy({ qr_token: token });
   }
 
+  async checkInByToken(token: string) {
+    const guest = await this.findByToken(token);
+    if (!guest) {
+      throw new NotFoundException('Guest not found');
+    }
+  
+    if (guest.checked_in) {
+      return { message: 'Зочин аль хэдийн ирсэн байна' };
+    }
+  
+    await this.update(guest.id, { checked_in: true });
+  
+    return { message: 'Ирц амжилттай бүртгэгдлээ' };
+  }
+  
   update(id: number, updateGuestDto: UpdateGuestDto) {
     return this.guestRepo.update(id, updateGuestDto);
   }

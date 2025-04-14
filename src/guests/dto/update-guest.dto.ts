@@ -15,4 +15,7 @@ export class UpdateGuestDto {
 
   @ApiPropertyOptional({ example: 'Sent', enum: ['Sent', 'Pending', 'Failed', 'By form', 'New'] })
   status?: 'Sent' | 'Pending' | 'Failed' | 'By form' | 'New';
+
+  @ApiPropertyOptional({ example: true })
+  checked_in?: boolean; 
 }

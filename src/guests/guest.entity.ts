@@ -28,6 +28,9 @@ export class Guest {
   @Column({ default: 'New' })
   status: 'Sent' | 'Pending' | 'Failed' | 'By form' | 'New';
 
+  @Column({ default: false })
+  checked_in: boolean; 
+
   @Column({ type: 'uuid', default: () => 'gen_random_uuid()' })
   qr_token: string;
 
