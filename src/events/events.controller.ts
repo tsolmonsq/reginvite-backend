@@ -29,7 +29,6 @@ import { diskStorage } from 'multer';
 import * as path from 'path';
 import * as fs from 'fs';
 
-
 @ApiBearerAuth('access-token')
 @ApiTags('Events')
 @UseGuards(JwtAuthGuard)
