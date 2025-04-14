@@ -71,19 +71,6 @@ export class GuestsController {
     return this.guestsService.sendInvitations(dto.guestIds, dto.templateId);
   }
 
-  @Get('checkin/:token')
-  async checkInGuest(@Param('token') token: string) {
-    const guest = await this.guestsService.findByToken(token);
-    
-    if (!guest) {
-      throw new NotFoundException('Guest not found');
-    }
-
-    await this.guestsService.update(guest.id, guest); 
-
-    return { message: 'Ирц амжилттай бүртгэгдлээ' };
-  }
-
   @Post('/checkin/:token')
   async checkInGuestPost(@Param('token') token: string) {
     return this.guestsService.checkInByToken(token);
