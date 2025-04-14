@@ -26,7 +26,7 @@ import { InvitationTemplateModule } from './invitation-template/invitation-templ
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
-        url: config.get<string>('DATABASE_URL'), // ✅ ENV-ээс авна
+        url: config.get<string>('DATABASE_URL'),
         entities: [User, Organizer, Event, Guest, InvitationTemplate],
         synchronize: false, 
         ssl: {
