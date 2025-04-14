@@ -28,7 +28,7 @@ import { InvitationTemplateModule } from './invitation-template/invitation-templ
         type: 'postgres',
         url: config.get<string>('DATABASE_URL'),
         entities: [User, Organizer, Event, Guest, InvitationTemplate],
-        synchronize: false, 
+        synchronize: config.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
         ssl: {
           rejectUnauthorized: false, 
         },
