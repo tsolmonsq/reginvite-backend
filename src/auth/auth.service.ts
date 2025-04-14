@@ -24,8 +24,7 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(dto.password, 10);
     const user = this.userRepo.create({ ...dto, password: hashedPassword });
     const savedUser = await this.userRepo.save(user);
-
-    // Organizer-г автоматаар холбоно
+    
     await this.organizerRepo.save({ user: savedUser });
 
     const { password, ...result } = savedUser;

@@ -5,6 +5,7 @@ import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as express from 'express';
 import * as cookieParser from 'cookie-parser';
+import { ConfigService } from '@nestjs/config';
 
 
 async function bootstrap() {
@@ -13,19 +14,22 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.use('/event-images', express.static(join(process.cwd(), 'event-images')));
-  
-  // Enable CORS for the frontend URL
+
   app.enableCors({
     origin: 'http://localhost:3000',
-    credentials: true, // if you're using cookies or authentication
+    credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Accept',
   });
+
+  const configService = app.get(ConfigService);
+  const apiBaseUrl = configService.get<string>('API_BASE_URL') || 'http://localhost:3001';
 
   const config = new DocumentBuilder()
     .setTitle('API Documentation')
     .setDescription('The API description for my NestJS app')
     .setVersion('1.0')
+    .addServer(apiBaseUrl) 
     .addBearerAuth(
       {
         type: 'http',
@@ -35,7 +39,7 @@ async function bootstrap() {
         description: 'Enter JWT token',
         in: 'header',
       },
-      'access-token'
+      'access-token',
     )
     .build();
 
