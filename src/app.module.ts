@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EmailModule } from './email/email.module';
 import { UserModule } from './users/users.module';
 import { Guest } from './guests/guest.entity';
@@ -20,16 +20,19 @@ import { InvitationTemplate } from './invitation-template/invitation-template.en
 import { InvitationTemplateModule } from './invitation-template/invitation-template.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost', // Adjust this as needed
-      port: 5432,
-      username: 'tsolmonbatbold',
-      password: '11081108',
-      database: 'reginvite',
-      entities: [User, Organizer, Event, Guest, InvitationTemplate],
-      synchronize: false,
+  imports: [ 
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        url: config.get<string>('DATABASE_URL'), // ✅ ENV-ээс авна
+        entities: [User, Organizer, Event, Guest, InvitationTemplate],
+        synchronize: false, 
+        ssl: {
+          rejectUnauthorized: false, 
+        },
+      }),
     }),
     MulterModule.register({
       storage: diskStorage({
