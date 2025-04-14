@@ -44,7 +44,7 @@ import { InvitationTemplateModule } from './invitation-template/invitation-templ
         },
       }),
     }),
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     EmailModule,
     UserModule,
     EventModule,

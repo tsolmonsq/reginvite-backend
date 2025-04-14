@@ -19,7 +19,7 @@ export class GuestsService {
     @InjectRepository(Event)
     private eventRepo: Repository<Event>,
     
-    @InjectRepository(InvitationTemplate) // 👈 add this
+    @InjectRepository(InvitationTemplate)
     private templateRepo: Repository<InvitationTemplate>,
 
     private emailService: EmailService,
