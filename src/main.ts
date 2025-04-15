@@ -19,7 +19,7 @@ async function bootstrap() {
     origin: 'http://localhost:3000',
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Accept',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
   });
 
   const configService = app.get(ConfigService);
