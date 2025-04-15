@@ -22,4 +22,7 @@ export class CreateEventDto {
     description: 'Зургийн файл (jpg/png)',
   })
   image?: any;
+
+  @ApiProperty()
+  templateId?: number; 
 }

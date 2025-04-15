@@ -1,11 +1,15 @@
-// --- event.service.ts ---
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Event } from './event.entity';
 import { Organizer } from '../organizers/organizer.entity';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { InvitationTemplate } from '../invitation-template/invitation-template.entity';
 
 @Injectable()
 export class EventService {
@@ -14,6 +18,8 @@ export class EventService {
     private readonly eventRepo: Repository<Event>,
     @InjectRepository(Organizer)
     private readonly organizerRepo: Repository<Organizer>,
+    @InjectRepository(InvitationTemplate)
+    private readonly templateRepo: Repository<InvitationTemplate>,
   ) {}
 
   async create(dto: CreateEventDto, imagePath: string, organizerId: number) {
@@ -21,25 +27,35 @@ export class EventService {
     if (!organizer) {
       throw new NotFoundException('Organizer олдсонгүй');
     }
-  
+
+    let template: InvitationTemplate | undefined = undefined;
+
+    if (dto.templateId) {
+      const found = await this.templateRepo.findOneBy({ id: dto.templateId });
+      template = found ?? undefined;
+    }
+
     const event = this.eventRepo.create({
       ...dto,
       imagePath,
-      organizer, 
+      organizer,
+      template,
     });
-  
+
     return this.eventRepo.save(event);
   }
 
   async findOne(id: number, userId: number) {
     const event = await this.eventRepo.findOne({
       where: { id },
-      relations: ['organizer', 'organizer.user', 'template'], 
+      relations: ['organizer', 'organizer.user', 'template'],
     });
+
     if (!event) throw new NotFoundException('Арга хэмжээ олдсонгүй');
     if (String(event.organizer.user.id) !== String(userId)) {
       throw new ForbiddenException('Энэ арга хэмжээг үзэх эрхгүй');
     }
+
     return event;
   }
 
@@ -48,12 +64,27 @@ export class EventService {
       where: { organizer: { id: organizerId } },
       relations: ['organizer'],
     });
-  }  
+  }
 
-  async update(id: number, dto: UpdateEventDto, userId: number, imagePath?: string) {
+  async update(
+    id: number,
+    dto: UpdateEventDto,
+    userId: number,
+    imagePath?: string,
+  ) {
     const event = await this.findOne(id, userId);
+
+    if (dto.templateId) {
+      const template = await this.templateRepo.findOneBy({
+        id: dto.templateId,
+      });
+      if (!template) throw new NotFoundException('Template олдсонгүй');
+      event.template = template;
+    }
+
     Object.assign(event, dto);
     if (imagePath) event.imagePath = imagePath;
+
     return this.eventRepo.save(event);
   }
 
