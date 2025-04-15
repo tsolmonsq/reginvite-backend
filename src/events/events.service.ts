@@ -34,7 +34,7 @@ export class EventService {
   async findOne(id: number, userId: number) {
     const event = await this.eventRepo.findOne({
       where: { id },
-      relations: ['organizer', 'organizer.user'],
+      relations: ['organizer', 'organizer.user', 'template'], 
     });
     if (!event) throw new NotFoundException('Арга хэмжээ олдсонгүй');
     if (String(event.organizer.user.id) !== String(userId)) {
