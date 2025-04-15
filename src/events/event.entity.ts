@@ -6,9 +6,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Organizer } from 'src/organizers/organizer.entity';
 import { Guest } from 'src/guests/guest.entity';
+import { InvitationTemplate } from 'src/invitation-template/invitation-template.entity';
 
 @Entity()
 export class Event {
@@ -44,4 +47,7 @@ export class Event {
 
   @OneToMany(() => Guest, (guest) => guest.event)
   guests: Guest[];
+
+  @ManyToOne(() => InvitationTemplate, (template) => template.events)
+  template: InvitationTemplate;
 }

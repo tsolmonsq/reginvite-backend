@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Event } from 'src/events/event.entity';
 
 @Entity()
 export class InvitationTemplate {
@@ -28,4 +29,7 @@ export class InvitationTemplate {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(() => Event, (event) => event.template)
+  events: Event[];
 }
