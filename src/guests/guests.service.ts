@@ -151,18 +151,18 @@ export class GuestsService {
     });
   
     if (!guest) {
-      throw new NotFoundException('Guest not found');
+      throw new NotFoundException('Зочин олдсонгүй.');
     }
   
     if (guest.checked_in) {
       return {
-        message: 'Зочин аль хэдийн ирсэн байна',
+        message: 'Зочны ирц аль хэдийн бүртгэгдсэн байна.',
         guest: {
           id: guest.id,
           first_name: guest.first_name,
           last_name: guest.last_name,
           email: guest.email,
-          checked_in: true,
+          checked_in: guest.checked_in,
           event: {
             id: guest.event.id,
             title: guest.event.title,
@@ -175,7 +175,7 @@ export class GuestsService {
     await this.guestRepo.save(guest);
   
     return {
-      message: 'Ирц амжилттай бүртгэгдлээ',
+      message: 'Ирц амжилттай бүртгэгдлээ.',
       guest: {
         id: guest.id,
         first_name: guest.first_name,
