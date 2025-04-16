@@ -5,6 +5,7 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
 } from 'typeorm';
 import { Event } from 'src/events/event.entity';
 
@@ -35,6 +36,7 @@ export class Guest {
   qr_token: string;
 
   @ManyToOne(() => Event, (event) => event.guests, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'eventId' }) 
   event: Event;
 
   @CreateDateColumn()
