@@ -34,7 +34,7 @@ export class GuestsController {
   }
 
   @Get()
-  @ApiQuery({ name: 'eventId', required: true})
+  @ApiQuery({ name: 'eventId', required: true })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiQuery({ name: 'search', required: false })
@@ -42,23 +42,25 @@ export class GuestsController {
     name: 'status',
     required: false,
     enum: allowedStatuses,
-    example: 'New',
   })
   findAll(
     @Query('eventId') eventId: string,
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '10',
     @Query('search') search: string = '',
-    @Query('status') status: string = 'New'
+    @Query('status') status?: string, 
   ) {
     const pageNum = parseInt(page, 10);
     const limitNum = parseInt(limit, 10);
   
     const normalizedStatus: GuestStatus | undefined =
-      allowedStatuses.includes(status as GuestStatus) ? (status as GuestStatus) : undefined;
+      allowedStatuses.includes(status as GuestStatus)
+        ? (status as GuestStatus)
+        : undefined;
   
     return this.guestsService.findAllByEvent(+eventId, pageNum, limitNum, search, normalizedStatus);
   }
+  
   
   @Get(':id')
   findOne(@Param('id') id: string) {
