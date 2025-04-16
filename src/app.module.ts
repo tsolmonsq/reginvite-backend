@@ -21,6 +21,8 @@ import { InvitationTemplateModule } from './invitation-template/invitation-templ
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { EventFormModule } from './event-form/event-form.module';
+import { EventForm } from './event-form/event-form.entity';
+import { EventFormField } from './event-form/event-form-field.entity';
 
 @Module({
   imports: [ 
@@ -34,7 +36,7 @@ import { EventFormModule } from './event-form/event-form.module';
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
         url: config.get<string>('DATABASE_URL'),
-        entities: [User, Organizer, Event, Guest, InvitationTemplate],
+        entities: [User, Organizer, Event, Guest, InvitationTemplate, EventForm, EventFormField],
         synchronize: config.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
         ssl: {
           rejectUnauthorized: false, 
