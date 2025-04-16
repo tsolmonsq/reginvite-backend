@@ -26,8 +26,37 @@ import {
     @ApiOperation({ summary: 'Формын талбарууд шинэчлэх' })
     @ApiParam({ name: 'eventId', type: Number })
     @ApiBody({
-      type: [EventFormField], 
+      type: [EventFormField],
       description: 'Шинэ форм талбаруудын массив',
+      examples: {
+        example1: {
+          summary: 'Жишээ формын талбарууд',
+          value: [
+            {
+              label: 'Нас',
+              type: 'number',
+              required: true,
+            },
+            {
+              label: 'Имэйл хаяг',
+              type: 'email',
+              required: false,
+            },
+            {
+              label: 'Хүйс',
+              type: 'radio',
+              required: true,
+              options: ['Эрэгтэй', 'Эмэгтэй']
+            },
+            {
+              label: 'Хобби',
+              type: 'checkbox',
+              required: false,
+              options: ['Унших', 'Аялал', 'Спорт']
+            }
+          ],
+        },
+      },
     })
     @ApiResponse({ status: 200, description: 'Шинэчилсэн форм буцаана' })
     async updateFields(
@@ -36,5 +65,5 @@ import {
     ) {
       return this.formService.updateFields(eventId, fields);
     }
-  }
+}
   
