@@ -20,6 +20,7 @@ import { InvitationTemplate } from './invitation-template/invitation-template.en
 import { InvitationTemplateModule } from './invitation-template/invitation-template.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { EventFormModule } from './event-form/event-form.module';
 
 @Module({
   imports: [ 
@@ -57,7 +58,8 @@ import { join } from 'path';
     GuestsModule,
     AuthModule,
     OrganizersModule,
-    InvitationTemplateModule
+    InvitationTemplateModule,
+    EventFormModule
   ],
   controllers: [AppController],
   providers: [AppService, OrganizersService],

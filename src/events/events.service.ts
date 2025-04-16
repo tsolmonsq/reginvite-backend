@@ -10,6 +10,7 @@ import { Organizer } from '../organizers/organizer.entity';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { InvitationTemplate } from '../invitation-template/invitation-template.entity';
+import { EventFormService } from 'src/event-form/event-form.service';
 
 @Injectable()
 export class EventService {
@@ -20,6 +21,7 @@ export class EventService {
     private readonly organizerRepo: Repository<Organizer>,
     @InjectRepository(InvitationTemplate)
     private readonly templateRepo: Repository<InvitationTemplate>,
+    private readonly formService: EventFormService, 
   ) {}
 
   async create(dto: CreateEventDto, imagePath: string, organizerId: number) {
@@ -42,7 +44,11 @@ export class EventService {
       template,
     });
 
-    return this.eventRepo.save(event);
+    const savedEvent = await this.eventRepo.save(event);
+
+    await this.formService.createForEvent(savedEvent.id);
+
+    return savedEvent;
   }
 
   async findOne(id: number, userId: number) {
