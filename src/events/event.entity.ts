@@ -12,6 +12,7 @@ import {
 import { Organizer } from 'src/organizers/organizer.entity';
 import { Guest } from 'src/guests/guest.entity';
 import { InvitationTemplate } from 'src/invitation-template/invitation-template.entity';
+import { EventForm } from 'src/event-form/event-form.entity';
 
 @Entity()
 export class Event {
@@ -50,4 +51,7 @@ export class Event {
 
   @ManyToOne(() => InvitationTemplate, (template) => template.events)
   template: InvitationTemplate;
+
+  @OneToOne(() => EventForm, (form) => form.event)
+  form: EventForm;
 }
