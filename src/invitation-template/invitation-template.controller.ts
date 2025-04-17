@@ -5,7 +5,7 @@ import { CreateInvitationTemplateDto } from './dto/create-invitation-template.dt
 import { UpdateInvitationTemplateDto } from './dto/update-invitation-template.dto';
 
 @ApiTags('Invitation Templates')
-@Controller('templates')
+@Controller('invitation-templates')
 export class InvitationTemplateController {
   constructor(private readonly templateService: InvitationTemplateService) {}
 
