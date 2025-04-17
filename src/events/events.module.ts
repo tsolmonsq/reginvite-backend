@@ -7,11 +7,13 @@ import { Organizer } from '../organizers/organizer.entity';
 import { OrganizersService } from '../organizers/organizers.service';
 import { InvitationTemplate } from 'src/invitation-template/entities/invitation-template.entity';
 import { EventFormModule } from 'src/event-form/event-form.module';
+import { Template } from 'src/invitation-template/entities/template.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Event, Organizer, InvitationTemplate]),
+    TypeOrmModule.forFeature([Event, Organizer, InvitationTemplate, Template]),
     EventFormModule,
+
     forwardRef(() => EventFormModule),
   ],
   providers: [EventService, OrganizersService],
