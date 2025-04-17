@@ -16,13 +16,14 @@ import { OrganizersModule } from './organizers/organizers.module';
 import { Organizer } from './organizers/organizer.entity';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { InvitationTemplate } from './invitation-template/invitation-template.entity';
+import { InvitationTemplate } from './invitation-template/entities/invitation-template.entity';
 import { InvitationTemplateModule } from './invitation-template/invitation-template.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { EventFormModule } from './event-form/event-form.module';
 import { EventForm } from './event-form/event-form.entity';
 import { EventFormField } from './event-form/event-form-field.entity';
+import { Template } from './invitation-template/entities/template.entity';
 
 @Module({
   imports: [ 
@@ -36,7 +37,7 @@ import { EventFormField } from './event-form/event-form-field.entity';
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
         url: config.get<string>('DATABASE_URL'),
-        entities: [User, Organizer, Event, Guest, InvitationTemplate, EventForm, EventFormField],
+        entities: [User, Organizer, Event, Guest, InvitationTemplate, Template, EventForm, EventFormField],
         synchronize: config.get<string>('TYPEORM_SYNCHRONIZE') === 'true',
         ssl: {
           rejectUnauthorized: false, 

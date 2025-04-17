@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { Organizer } from 'src/organizers/organizer.entity';
 import { Guest } from 'src/guests/guest.entity';
-import { InvitationTemplate } from 'src/invitation-template/invitation-template.entity';
+import { InvitationTemplate } from 'src/invitation-template/entities/invitation-template.entity';
 import { EventForm } from 'src/event-form/event-form.entity';
 
 @Entity()
@@ -49,8 +49,11 @@ export class Event {
   @OneToMany(() => Guest, (guest) => guest.event)
   guests: Guest[];
 
-  @ManyToOne(() => InvitationTemplate, (template) => template.events)
-  template: InvitationTemplate;
+  @OneToOne(() => InvitationTemplate, (it) => it.event, {
+    cascade: true,
+    eager: true,
+  })
+  invitationTemplate: InvitationTemplate;
 
   @OneToOne(() => EventForm, (form) => form.event)
   form: EventForm;
