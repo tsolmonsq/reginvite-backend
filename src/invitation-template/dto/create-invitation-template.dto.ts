@@ -18,4 +18,7 @@ export class CreateInvitationTemplateDto {
 
   @ApiProperty()
   show_rsvp: boolean;
+
+  @ApiProperty({ required: false })
+  baseTemplateId?: number;
 }
