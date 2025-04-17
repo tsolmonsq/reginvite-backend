@@ -24,6 +24,7 @@ import { EventFormModule } from './event-form/event-form.module';
 import { EventForm } from './event-form/event-form.entity';
 import { EventFormField } from './event-form/event-form-field.entity';
 import { Template } from './invitation-template/entities/template.entity';
+import { TemplateModule } from './invitation-template/template.module';
 
 @Module({
   imports: [ 
@@ -62,7 +63,8 @@ import { Template } from './invitation-template/entities/template.entity';
     AuthModule,
     OrganizersModule,
     InvitationTemplateModule,
-    EventFormModule
+    EventFormModule,
+    TemplateModule
   ],
   controllers: [AppController],
   providers: [AppService, OrganizersService],

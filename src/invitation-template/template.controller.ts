@@ -5,7 +5,7 @@ import { Template } from "./entities/template.entity";
 import { Repository } from "typeorm";
 
 @ApiTags('Base Templates')
-@Controller('base-templates') // ✔️ өөр endpoint
+@Controller('base-templates')
 export class TemplateController {
   constructor(
     @InjectRepository(Template)
