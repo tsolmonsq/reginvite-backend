@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { InvitationTemplate } from './invitation-template.entity';
+import { InvitationTemplate } from './entities/invitation-template.entity';
 import { Repository } from 'typeorm';
 import { CreateInvitationTemplateDto } from './dto/create-invitation-template.dto';
 import { UpdateInvitationTemplateDto } from './dto/update-invitation-template.dto';

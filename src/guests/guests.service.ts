@@ -6,7 +6,7 @@ import { CreateGuestDto } from './dto/create-guest.dto';
 import { UpdateGuestDto } from './dto/update-guest.dto';
 import { Event } from 'src/events/event.entity';
 import { EmailService } from 'src/email/email.service';
-import { InvitationTemplate } from 'src/invitation-template/invitation-template.entity';
+import { InvitationTemplate } from 'src/invitation-template/entities/invitation-template.entity';
 import { QRCodeService } from 'src/qr/qr-code.service';
 import { ConfigService } from '@nestjs/config';
 
@@ -115,7 +115,7 @@ export class GuestsService {
         const fullQrUrl = `${baseUrl}${qrImagePath}`;
   
         // Урилгын HTML-ийг бүрдүүлэх
-        const html = template.html
+        const html = template.baseTemplate.html
           .replaceAll('{{TITLE}}', guest.event.title || '')
           .replaceAll('{{DESCRIPTION}}', guest.event.description || '')
           .replaceAll('{{LOCATION}}', guest.event.location || '')

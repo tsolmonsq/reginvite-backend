@@ -6,7 +6,7 @@ import { Guest } from './guest.entity';
 import { Event } from 'src/events/event.entity';
 import { EmailService } from 'src/email/email.service';
 import { ConfigModule } from '@nestjs/config';
-import { InvitationTemplate } from 'src/invitation-template/invitation-template.entity';
+import { InvitationTemplate } from 'src/invitation-template/entities/invitation-template.entity';
 import { QRCodeModule } from 'src/qr/qr-code.module';
 
 @Module({
