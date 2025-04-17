@@ -6,8 +6,8 @@ import { InvitationTemplateController } from './invitation-template.controller';
 import { Template } from './entities/template.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([InvitationTemplate])], 
-  controllers: [InvitationTemplateController, Template],
+  imports: [TypeOrmModule.forFeature([InvitationTemplate, Template])], 
+  controllers: [InvitationTemplateController],
   providers: [InvitationTemplateService],
   exports: [InvitationTemplateService], 
 })
