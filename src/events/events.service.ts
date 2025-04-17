@@ -4,7 +4,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Event } from './event.entity';
 import { Organizer } from '../organizers/organizer.entity';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -65,11 +65,38 @@ export class EventService {
     return event;
   }
 
-  async findAllByOrganizerId(organizerId: number) {
-    return this.eventRepo.find({
-      where: { organizer: { id: organizerId } },
+  async findAllByOrganizerId(
+    organizerId: number,
+    search: string = '',
+    page: number = 1,
+    limit: number = 10,
+  ) {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.eventRepo.findAndCount({
+      where: {
+        organizer: { id: organizerId },
+        ...(search ? { title: ILike(`%${search}%`) } : {}),
+      },
       relations: ['organizer'],
+      skip,
+      take: limit,
+      order: { created_at: 'DESC' },
     });
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        hasNext: page < totalPages,
+        hasPrevious: page > 1,
+        totalPages,
+      },
+    };
   }
 
   async update(

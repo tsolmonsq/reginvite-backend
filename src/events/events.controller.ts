@@ -11,6 +11,7 @@ import {
   UploadedFile,
   UseInterceptors,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -79,12 +80,23 @@ export class EventController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async findAll(@Req() req: any) {
+  async findAll(
+    @Req() req: any,
+    @Query('search') search: string = '',
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
+  ) {
     const userId = req.user.id;
     const organizer = await this.organizerService.findByUserId(userId);
-    return this.eventService.findAllByOrganizerId(organizer.id);
-  }
 
+    return this.eventService.findAllByOrganizerId(
+      organizer.id,
+      search,
+      Number(page),
+      Number(limit),
+    );
+  }
+    
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
     return this.eventService.findOne(id, req.user.id);
