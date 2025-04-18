@@ -8,7 +8,7 @@ import { EventModule } from 'src/events/events.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([EventForm, EventFormField]),
+    TypeOrmModule.forFeature([EventForm, EventFormField, Event]),
     forwardRef(() => EventModule),
   ],
   providers: [EventFormService],
