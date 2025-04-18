@@ -5,12 +5,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
-import { Event } from './event.entity';
-import { Organizer } from '../organizers/organizer.entity';
+import { Event } from './entities/event.entity';
+import { Organizer } from '../organizers/entities/organizer.entity';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { InvitationTemplate } from 'src/invitation-template/entities/invitation-template.entity';
-import { Template } from 'src/invitation-template/entities/template.entity';
+import { Template } from 'src/template/entities/template.entity';
 import { EventFormService } from 'src/event-form/event-form.service';
 
 @Injectable()

@@ -7,7 +7,7 @@ import {
   } from '@nestjs/common';
   import { EventFormService } from './event-form.service';
   import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
-  import { EventFormField } from './event-form-field.entity';
+  import { EventFormField } from './entities/event-form-field.entity';
   
   @ApiTags('Event Form') 
   @Controller('event-forms')

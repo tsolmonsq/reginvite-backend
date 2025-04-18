@@ -9,8 +9,8 @@ import {
   OneToOne,
   JoinColumn,
 } from 'typeorm';
-import { Organizer } from 'src/organizers/organizer.entity';
-import { Guest } from 'src/guests/guest.entity';
+import { Organizer } from 'src/organizers/entities/organizer.entity';
+import { Guest } from 'src/guests/entities/guest.entity';
 import { InvitationTemplate } from 'src/invitation-template/entities/invitation-template.entity';
 import { EventForm } from 'src/event-form/event-form.entity';
 

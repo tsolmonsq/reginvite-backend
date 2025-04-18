@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, OneToMany } from 'typeorm';
-import { User } from 'src/users/user.entity';
-import { Event } from 'src/events/event.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Event } from 'src/events/entities/event.entity';
 
 @Entity()
 export class Organizer {

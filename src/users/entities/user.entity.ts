@@ -1,4 +1,4 @@
-import { Organizer } from 'src/organizers/organizer.entity';
+import { Organizer } from 'src/organizers/entities/organizer.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
 
 @Entity()

@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { Guest } from './guest.entity';
+import { Guest } from './entities/guest.entity';
 import { CreateGuestDto } from './dto/create-guest.dto';
 import { UpdateGuestDto } from './dto/update-guest.dto';
-import { Event } from 'src/events/event.entity';
+import { Event } from 'src/events/entities/event.entity';
 import { EmailService } from 'src/email/email.service';
 import { InvitationTemplate } from 'src/invitation-template/entities/invitation-template.entity';
 import { QRCodeService } from 'src/qr/qr-code.service';

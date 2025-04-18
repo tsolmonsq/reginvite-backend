@@ -1,5 +1,5 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Organizer } from './organizer.entity';
+import { Organizer } from './entities/organizer.entity';
 import { OrganizersService } from './organizers.service';
 import { Module } from '@nestjs/common';
 

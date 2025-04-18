@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { InvitationTemplate } from './entities/invitation-template.entity';
 import { InvitationTemplateService } from './invitation-template.service';
 import { InvitationTemplateController } from './invitation-template.controller';
-import { Template } from './entities/template.entity';
+import { Template } from '../template/entities/template.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([InvitationTemplate, Template])], 

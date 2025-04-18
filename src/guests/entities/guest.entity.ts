@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
   JoinColumn,
 } from 'typeorm';
-import { Event } from 'src/events/event.entity';
+import { Event } from 'src/events/entities/event.entity';
 
 @Entity()
 export class Guest {

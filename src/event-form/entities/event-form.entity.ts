@@ -1,6 +1,6 @@
 import { Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { EventFormField } from "./event-form-field.entity";
-import { Event } from "src/events/event.entity";
+import { Event } from "src/events/entities/event.entity";
 
 @Entity()
 export class EventForm {

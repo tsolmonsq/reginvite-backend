@@ -1,7 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EventForm } from './event-form.entity';
-import { EventFormField } from './event-form-field.entity';
+import { EventForm } from './entities/event-form.entity';
+import { EventFormField } from './entities/event-form-field.entity';
 import { EventFormService } from './event-form.service';
 import { EventFormController } from './event-form.controller';
 import { EventModule } from 'src/events/events.module';

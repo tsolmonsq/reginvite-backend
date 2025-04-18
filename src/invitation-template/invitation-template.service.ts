@@ -4,7 +4,7 @@ import { InvitationTemplate } from './entities/invitation-template.entity';
 import { Repository } from 'typeorm';
 import { CreateInvitationTemplateDto } from './dto/create-invitation-template.dto';
 import { UpdateInvitationTemplateDto } from './dto/update-invitation-template.dto';
-import { Template } from './entities/template.entity';
+import { Template } from '../template/entities/template.entity';
 
 @Injectable()
 export class InvitationTemplateService {

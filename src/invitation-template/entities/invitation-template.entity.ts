@@ -2,8 +2,8 @@ import {
     Entity, PrimaryGeneratedColumn, Column, OneToOne,
     JoinColumn, ManyToOne, CreateDateColumn, UpdateDateColumn,
   } from 'typeorm';
-  import { Template } from './template.entity';
-  import { Event } from 'src/events/event.entity';
+  import { Template } from '../../template/entities/template.entity';
+  import { Event } from 'src/events/entities/event.entity';
   
   @Entity()
   export class InvitationTemplate {

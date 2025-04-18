@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Template } from "./entities/template.entity";
+import { Template } from "./template.entity";
 import { Repository } from "typeorm";
 
 @ApiTags('Base Templates')
