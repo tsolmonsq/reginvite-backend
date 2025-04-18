@@ -94,7 +94,7 @@ export class EventService {
       relations: ['organizer'],
       skip,
       take: limit,
-      order: { created_at: 'DESC' },
+      order: { start_time: 'ASC' },
     });
 
     const totalPages = Math.ceil(total / limit);
