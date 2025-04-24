@@ -18,11 +18,14 @@ export class EventFormService {
     private readonly eventRepo: Repository<Event>,
   ) {}
 
-  async createForEvent(eventId: number) {
+  async createPublicForm(eventId: number): Promise<EventForm> {
     const event = await this.eventRepo.findOne({ where: { id: eventId } });
-    if (!event) throw new Error('Event not found');
+    if (!event) throw new NotFoundException('Event not found');
 
-    const form = this.formRepo.create({ event: { id: event.id } });
+    const existing = await this.formRepo.findOne({ where: { event: Equal(eventId), type: Equal('public') } });
+    if (existing) throw new Error('Public форм аль хэдийн үүссэн байна');
+
+    const form = this.formRepo.create({ event, type: 'public' });
     const savedForm = await this.formRepo.save(form);
 
     const defaultFields: Partial<EventFormField>[] = [
@@ -32,41 +35,95 @@ export class EventFormService {
       { label: 'Утасны дугаар', type: 'text', required: true },
     ];
 
-    const fieldEntities = defaultFields.map((field) =>
-      this.fieldRepo.create({ ...field, form: savedForm })
+    const fieldEntities = defaultFields.map(field =>
+      this.fieldRepo.create({ ...field, form: savedForm }),
     );
     await this.fieldRepo.save(fieldEntities);
 
     return savedForm;
   }
 
-  async getByEvent(eventId: number): Promise<EventForm> {
+  async createRsvpForm(eventId: number): Promise<EventForm> {
+    const event = await this.eventRepo.findOne({ where: { id: eventId } });
+    if (!event) throw new NotFoundException('Event not found');
+
+    const existing = await this.formRepo.findOne({ where: { event: Equal(eventId), type: Equal('rsvp') } });
+    if (existing) throw new Error('RSVP форм аль хэдийн үүссэн байна');
+
+    const form = this.formRepo.create({ event, type: 'rsvp' });
+    const savedForm = await this.formRepo.save(form);
+
+    return savedForm;
+  }
+
+  async getPublicForm(eventId: number): Promise<EventForm> {
     let form = await this.formRepo.findOne({
-      where: { event: Equal(eventId) },
+      where: { event: Equal(eventId), type: Equal('public') },
       relations: ['fields'],
     });
   
     if (!form) {
-      form = await this.createForEvent(eventId); 
+      try {
+        form = await this.createPublicForm(eventId);
+      } catch (err) {
+        throw new NotFoundException('Public форм үүсгэхэд алдаа гарлаа: ' + err.message);
+      }
+    }
+  
+    return form;
+  }  
+
+  async getRsvpForm(eventId: number): Promise<EventForm> {
+    let form = await this.formRepo.findOne({
+      where: { event: Equal(eventId), type: Equal('rsvp') },
+      relations: ['fields'],
+    });
+  
+    if (!form) {
+      try {
+        form = await this.createRsvpForm(eventId);
+      } catch (err) {
+        throw new NotFoundException('RSVP форм үүсгэхэд алдаа гарлаа: ' + err.message);
+      }
     }
   
     return form;
   }
 
-  async updateFields(eventId: number, fields: Partial<EventFormField>[]): Promise<EventForm> {
+  async updatePublicFields(eventId: number, fields: Partial<EventFormField>[]): Promise<EventForm> {
     let form = await this.formRepo.findOne({
-      where: { event: Equal(eventId) },
+      where: { event: Equal(eventId), type: Equal('public') },
       relations: ['fields'],
     });
   
     if (!form) {
-      form = await this.createForEvent(eventId); 
+      throw new NotFoundException('Public форм олдсонгүй');
     }
   
     await this.fieldRepo.delete({ form: { id: form.id } });
   
     const newFields = fields.map((field) =>
-      this.fieldRepo.create({ ...field, form })
+      this.fieldRepo.create({ ...field, form }),
+    );
+  
+    form.fields = await this.fieldRepo.save(newFields);
+    return form;
+  }
+  
+  async updateRsvpFields(eventId: number, fields: Partial<EventFormField>[]): Promise<EventForm> {
+    let form = await this.formRepo.findOne({
+      where: { event: Equal(eventId), type: Equal('rsvp') },
+      relations: ['fields'],
+    });
+  
+    if (!form) {
+      throw new NotFoundException('RSVP форм олдсонгүй');
+    }
+  
+    await this.fieldRepo.delete({ form: { id: form.id } });
+  
+    const newFields = fields.map((field) =>
+      this.fieldRepo.create({ ...field, form }),
     );
   
     form.fields = await this.fieldRepo.save(newFields);

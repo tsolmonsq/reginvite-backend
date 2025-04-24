@@ -27,16 +27,16 @@ export class EventService {
     private readonly formService: EventFormService,
   ) {}
 
-  async create(dto: CreateEventDto, imagePath: string, organizerId: number) {
+  async createEvent(dto: CreateEventDto, imagePath: string, organizerId: number) {
     const organizer = await this.organizerRepo.findOneBy({ id: organizerId });
     if (!organizer) throw new NotFoundException('Organizer олдсонгүй');
-
+  
     let invitationTemplate: InvitationTemplate | undefined = undefined;
-
+  
     if (dto.templateId) {
       const baseTemplate = await this.templateRepo.findOneBy({ id: dto.templateId });
       if (!baseTemplate) throw new NotFoundException('Template олдсонгүй');
-
+  
       invitationTemplate = this.invitationTemplateRepo.create({
         baseTemplate,
         font: 'Arial',
@@ -45,19 +45,22 @@ export class EventService {
         show_rsvp: true,
       });
     }
-
+  
     const event = this.eventRepo.create({
       ...dto,
       imagePath,
       organizer,
       invitationTemplate,
     });
-
+  
     const savedEvent = await this.eventRepo.save(event);
-    await this.formService.createForEvent(savedEvent.id);
-
+  
+    await this.formService.createPublicForm(savedEvent.id);
+    await this.formService.createRsvpForm(savedEvent.id);
+  
     return savedEvent;
   }
+  
 
   async findOne(id: number, userId: number) {
     const event = await this.eventRepo.findOne({

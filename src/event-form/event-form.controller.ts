@@ -4,6 +4,7 @@ import {
     Patch,
     Param,
     Body,
+    Query,
   } from '@nestjs/common';
   import { EventFormService } from './event-form.service';
   import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
@@ -12,58 +13,92 @@ import {
   @ApiTags('Event Form') 
   @Controller('event-forms')
   export class EventFormController {
-    constructor(private readonly formService: EventFormService) {}
+    constructor(private readonly eventFormService: EventFormService) {}
   
-    @Get(':eventId')
-    @ApiOperation({ summary: 'Эвентийн форм татах' })
-    @ApiParam({ name: 'eventId', type: Number })
-    @ApiResponse({ status: 200, description: 'Формын бүтэц буцаана' })
-    async getForm(@Param('eventId') eventId: number) {
-      return this.formService.getByEvent(eventId);
+    @Get(':eventId/public')
+    getPublic(@Param('eventId') eventId: number) {
+      return this.eventFormService.getPublicForm(eventId);
+    }
+
+    @Get(':eventId/rsvp')
+    getRsvp(@Param('eventId') eventId: number) {
+      return this.eventFormService.getRsvpForm(eventId);
     }
   
-    @Patch(':eventId')
-    @ApiOperation({ summary: 'Формын талбарууд шинэчлэх' })
+    @Patch(':eventId/public')
+    @ApiOperation({ summary: 'Public формын талбаруудыг шинэчлэх' })
     @ApiParam({ name: 'eventId', type: Number })
     @ApiBody({
       type: [EventFormField],
-      description: 'Шинэ форм талбаруудын массив',
+      description: 'Public формд харуулах шинэ талбаруудын массив',
       examples: {
         example1: {
-          summary: 'Жишээ формын талбарууд',
+          summary: 'Жишээ public талбарууд',
           value: [
             {
-              label: 'Нас',
-              type: 'number',
+              label: 'Овог',
+              type: 'string',
               required: true,
+            },
+            {
+              label: 'Нэр',
+              type: 'string',
+              required: true,
+            },
+            {
+              label: 'Утасны дугаар',
+              type: 'string',
+              required: true
             },
             {
               label: 'Имэйл хаяг',
               type: 'email',
-              required: false,
+              required: true
             },
-            {
-              label: 'Хүйс',
-              type: 'radio',
-              required: true,
-              options: ['Эрэгтэй', 'Эмэгтэй']
-            },
-            {
-              label: 'Хобби',
-              type: 'checkbox',
-              required: false,
-              options: ['Унших', 'Аялал', 'Спорт']
-            }
           ],
         },
       },
     })
-    @ApiResponse({ status: 200, description: 'Шинэчилсэн форм буцаана' })
-    async updateFields(
+    @ApiResponse({ status: 200, description: 'Шинэчилсэн public форм буцаана' })
+    updatePublicFields(
       @Param('eventId') eventId: number,
       @Body() fields: Partial<EventFormField>[],
     ) {
-      return this.formService.updateFields(eventId, fields);
+      return this.eventFormService.updatePublicFields(eventId, fields);
     }
+    
+    @Patch(':eventId/rsvp')
+    @ApiOperation({ summary: 'RSVP формын талбаруудыг шинэчлэх' })
+    @ApiParam({ name: 'eventId', type: Number })
+    @ApiBody({
+      type: [EventFormField],
+      description: 'RSVP формын шинэ талбаруудын массив',
+      examples: {
+        example1: {
+          summary: 'Жишээ RSVP талбарууд',
+          value: [
+            {
+              label: 'Ирэх эсэх',
+              type: 'radio',
+              required: true,
+              options: ['Тийм', 'Үгүй'],
+            },
+            {
+              label: 'Дагалдан ирэх хүн байгаа юу?',
+              type: 'checkbox',
+              required: false,
+              options: ['Нэг хүн', 'Хоёр хүн'],
+            },
+          ],
+        },
+      },
+    })
+    @ApiResponse({ status: 200, description: 'Шинэчилсэн rsvp форм буцаана' })
+    updateRsvpFields(
+      @Param('eventId') eventId: number,
+      @Body() fields: Partial<EventFormField>[],
+    ) {
+      return this.eventFormService.updateRsvpFields(eventId, fields);
+    }    
 }
   

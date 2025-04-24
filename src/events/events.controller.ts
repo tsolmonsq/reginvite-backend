@@ -75,7 +75,7 @@ export class EventController {
   
     const imagePath = file?.filename ? `event-images/${file.filename}` : "";
   
-    return this.eventService.create(dto, imagePath, organizer.id);
+    return this.eventService.createEvent(dto, imagePath, organizer.id);
   }  
 
   @Get()
