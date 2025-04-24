@@ -136,8 +136,8 @@ export class EventFormService {
     return form;
   }  
 
-  async createPublicGuest(eventId: number, dto: CreateGuestDto): Promise<Guest> {
-    const event = await this.eventRepo.findOne({ where: { id: eventId } });
+  async createPublicGuest(dto: CreateGuestDto): Promise<Guest> {
+    const event = await this.eventRepo.findOne({ where: { id: dto.eventId } });
     if (!event) throw new NotFoundException('Event not found');
   
     const guest = this.guestRepo.create({

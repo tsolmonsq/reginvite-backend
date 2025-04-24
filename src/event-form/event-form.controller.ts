@@ -112,7 +112,7 @@ import { CreateGuestDto } from 'src/guests/dto/create-guest.dto';
       @Param('eventId', ParseIntPipe) eventId: number,
       @Body() dto: CreateGuestDto,
     ) {
-      return this.eventFormService.createPublicGuest(eventId, dto);
+      return this.eventFormService.createPublicGuest(dto);
     }
 }
   
