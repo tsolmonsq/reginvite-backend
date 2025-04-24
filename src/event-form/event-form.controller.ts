@@ -9,6 +9,7 @@ import {
   import { EventFormService } from './event-form.service';
   import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
   import { EventFormField } from './entities/event-form-field.entity';
+  import { ParseIntPipe } from '@nestjs/common';
   
   @ApiTags('Event Form') 
   @Controller('event-forms')
@@ -16,12 +17,12 @@ import {
     constructor(private readonly eventFormService: EventFormService) {}
   
     @Get(':eventId/public')
-    getPublic(@Param('eventId') eventId: number) {
+    getPublic(@Param('eventId', ParseIntPipe) eventId: number) {
       return this.eventFormService.getPublicForm(eventId);
     }
 
     @Get(':eventId/rsvp')
-    getRsvp(@Param('eventId') eventId: number) {
+    getRsvp(@Param('eventId', ParseIntPipe) eventId: number) {
       return this.eventFormService.getRsvpForm(eventId);
     }
   
