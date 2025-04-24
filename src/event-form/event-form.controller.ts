@@ -135,5 +135,21 @@ import { CreateGuestDto } from 'src/guests/dto/create-guest.dto';
     ) {
       return this.eventFormService.updateMaxGuests(eventId, body.maxGuests);
     }
+
+    @Patch(':eventId/settings')
+    updateFormSettings(
+      @Param('eventId') eventId: number,
+      @Body() body: { max_guests?: number; close_at?: string; is_open?: boolean }
+    ) {
+      return this.eventFormService.updateSettings(eventId, body);
+    }
+
+    @Get(':eventId/public/stats')
+    @ApiOperation({ summary: 'Public формын статистик' })
+    @ApiParam({ name: 'eventId', type: Number })
+    @ApiResponse({ status: 200, description: 'Формын бүртгэлийн мэдээлэл' })
+    getPublicStats(@Param('eventId', ParseIntPipe) eventId: number) {
+      return this.eventFormService.getPublicFormStats(eventId);
+    }
 }
   

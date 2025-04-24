@@ -147,6 +147,14 @@ export class EventFormService {
       throw new NotFoundException('Public форм олдсонгүй');
     }
 
+    if (!form.is_open) {
+      throw new Error('Форм хаалттай байна');
+    }
+
+    if (form.close_at && new Date() > form.close_at) {
+      throw new Error('Бүртгэлийн хугацаа дууссан байна');
+    }
+
     if (form.max_guests) {
       const currentGuestCount = await this.guestRepo.count({
         where: {
@@ -182,4 +190,59 @@ export class EventFormService {
     form.max_guests = maxGuests;
     return this.formRepo.save(form);
   }
+
+  async updateSettings(eventId: number, data: { max_guests?: number; close_at?: string; is_open?: boolean }) {
+    const form = await this.formRepo.findOne({
+      where: { event: { id: eventId }, type: 'public' },
+    });
+    if (!form) throw new NotFoundException('Public форм олдсонгүй');
+  
+    const currentCount = await this.guestRepo.count({
+      where: {
+        event: { id: eventId },
+        status: Equal('By form'),
+      },
+    });
+  
+    if (data.max_guests !== undefined && data.max_guests < currentCount) {
+      throw new Error(`Одоогоор ${currentCount} зочин бүртгэгдсэн тул maxGuests ${currentCount}-с бага байж болохгүй`);
+    }
+  
+    if (data.close_at) {
+      form.close_at = new Date(data.close_at);
+    }
+  
+    if (data.max_guests !== undefined) {
+      form.max_guests = data.max_guests;
+    }
+  
+    if (data.is_open !== undefined) {
+      form.is_open = data.is_open;
+    }
+  
+    return this.formRepo.save(form);
+  }  
+
+  async getPublicFormStats(eventId: number) {
+    const form = await this.formRepo.findOne({
+      where: { event: { id: eventId }, type: 'public' },
+    });
+  
+    if (!form) throw new NotFoundException('Public форм олдсонгүй');
+  
+    const registeredGuests = await this.guestRepo.count({
+      where: {
+        event: { id: eventId },
+        status: Equal('By form'),
+      },
+    });
+  
+    return {
+      formId: form.id,
+      is_open: form.is_open,
+      max_guests: form.max_guests ?? null,
+      close_at: form.close_at ?? null,
+      registered: registeredGuests,
+    };
+  }  
 }

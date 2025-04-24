@@ -13,8 +13,14 @@ export class EventForm {
   })
   type: 'public' | 'rsvp';
 
+  @Column({ type: 'boolean', default: true })
+  is_open: boolean;
+
   @Column({ type: 'int', nullable: true })
   max_guests: number;
+
+  @Column({ type: 'timestamp', nullable: true })
+  close_at: Date;
 
   @ManyToOne(() => Event, (event) => event.forms, { onDelete: 'CASCADE' })
   event: Event;
