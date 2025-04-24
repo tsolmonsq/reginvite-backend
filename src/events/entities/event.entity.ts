@@ -55,6 +55,8 @@ export class Event {
   })
   invitationTemplate: InvitationTemplate;
 
-  @OneToOne(() => EventForm, (form) => form.event)
-  form: EventForm;
+  @OneToMany(() => EventForm, (form) => form.event, {
+    cascade: true,
+  })
+  forms: EventForm[];
 }

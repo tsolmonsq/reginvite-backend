@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { EventFormField } from "./event-form-field.entity";
 import { Event } from "src/events/entities/event.entity";
 
@@ -6,15 +6,14 @@ import { Event } from "src/events/entities/event.entity";
 export class EventForm {
   @PrimaryGeneratedColumn()
   id: number;
-
+  
   @Column({
     type: 'enum',
     enum: ['public', 'rsvp'],
   })
   type: 'public' | 'rsvp';
 
-  @OneToOne(() => Event, { onDelete: 'CASCADE' })
-  @JoinColumn()
+  @ManyToOne(() => Event, (event) => event.forms, { onDelete: 'CASCADE' })
   event: Event;
 
   @OneToMany(() => EventFormField, (field) => field.form, { cascade: true })
