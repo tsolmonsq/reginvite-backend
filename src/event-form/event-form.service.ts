@@ -54,14 +54,22 @@ export class EventFormService {
   }
 
   async updateFields(eventId: number, fields: Partial<EventFormField>[]): Promise<EventForm> {
-    const form = await this.getByEvent(eventId);
+    let form = await this.formRepo.findOne({
+      where: { event: Equal(eventId) },
+      relations: ['fields'],
+    });
+  
+    if (!form) {
+      form = await this.createForEvent(eventId); 
+    }
+  
     await this.fieldRepo.delete({ form: { id: form.id } });
-
+  
     const newFields = fields.map((field) =>
       this.fieldRepo.create({ ...field, form })
     );
-
+  
     form.fields = await this.fieldRepo.save(newFields);
     return form;
-  }
+  }  
 }
