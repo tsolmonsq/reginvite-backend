@@ -4,6 +4,8 @@ import { Equal, Repository } from 'typeorm';
 import { EventForm } from './entities/event-form.entity';
 import { EventFormField } from './entities/event-form-field.entity';
 import { Event } from 'src/events/entities/event.entity';
+import { CreateGuestDto } from 'src/guests/dto/create-guest.dto';
+import { Guest } from 'src/guests/entities/guest.entity';
 
 @Injectable()
 export class EventFormService {
@@ -15,6 +17,9 @@ export class EventFormService {
     private readonly fieldRepo: Repository<EventFormField>,
     
     @InjectRepository(Event)
+    private readonly eventRepo: Repository<Event>,
+
+    @InjectRepository(Guest)
     private readonly eventRepo: Repository<Event>,
   ) {}
 
@@ -90,6 +95,7 @@ export class EventFormService {
     return form;
   }
 
+
   async updatePublicFields(eventId: number, fields: Partial<EventFormField>[]): Promise<EventForm> {
     let form = await this.formRepo.findOne({
       where: { event: Equal(eventId), type: Equal('public') },
@@ -129,4 +135,21 @@ export class EventFormService {
     form.fields = await this.fieldRepo.save(newFields);
     return form;
   }  
+
+  async createPublicGuest(eventId: number, dto: CreateGuestDto): Promise<Guest> {
+    const event = await this.eventRepo.findOne({ where: { id: eventId } });
+    if (!event) throw new NotFoundException('Event not found');
+  
+    const guest = this.guestRepo.create({
+      first_name: dto.first_name,
+      last_name: dto.last_name,
+      email: dto.email,
+      phone: dto.phone,
+      event,
+      status: 'By form',
+    });
+  
+    return this.guestRepo.save(guest);
+  }
+  
 }

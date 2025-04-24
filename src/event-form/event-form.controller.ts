@@ -5,11 +5,13 @@ import {
     Param,
     Body,
     Query,
+    Post,
   } from '@nestjs/common';
   import { EventFormService } from './event-form.service';
   import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
   import { EventFormField } from './entities/event-form-field.entity';
   import { ParseIntPipe } from '@nestjs/common';
+import { CreateGuestDto } from 'src/guests/dto/create-guest.dto';
   
   @ApiTags('Event Form') 
   @Controller('event-forms')
@@ -101,5 +103,16 @@ import {
     ) {
       return this.eventFormService.updateRsvpFields(eventId, fields);
     }    
+
+    @Post(':eventId/public-response')
+    @ApiOperation({ summary: 'Public форм бөглөсөн зочныг бүртгэх' })
+    @ApiParam({ name: 'eventId', type: Number })
+    @ApiBody({ type: CreateGuestDto })
+    createPublicGuest(
+      @Param('eventId', ParseIntPipe) eventId: number,
+      @Body() dto: CreateGuestDto,
+    ) {
+      return this.eventFormService.createPublicGuest(eventId, dto);
+    }
 }
   

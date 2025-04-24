@@ -6,10 +6,11 @@ import { EventFormField } from './entities/event-form-field.entity';
 import { EventFormService } from './event-form.service';
 import { EventFormController } from './event-form.controller';
 import { EventModule } from 'src/events/events.module';
+import { Guest } from 'src/guests/entities/guest.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([EventForm, EventFormField, Event]),
+    TypeOrmModule.forFeature([EventForm, EventFormField, Event, Guest]),
     forwardRef(() => EventModule),
   ],
   providers: [EventFormService],
