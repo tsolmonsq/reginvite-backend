@@ -106,7 +106,6 @@ import { CreateGuestDto } from 'src/guests/dto/create-guest.dto';
 
     @Post(':eventId/public-response')
     @ApiOperation({ summary: 'Public форм бөглөсөн зочныг бүртгэх' })
-    @ApiParam({ name: 'eventId', type: Number })
     @ApiBody({ type: CreateGuestDto })
     createPublicGuest(
       @Param('eventId', ParseIntPipe) eventId: number,
