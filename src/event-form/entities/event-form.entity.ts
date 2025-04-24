@@ -13,6 +13,9 @@ export class EventForm {
   })
   type: 'public' | 'rsvp';
 
+  @Column({ type: 'int', nullable: true })
+  max_guests: number;
+
   @ManyToOne(() => Event, (event) => event.forms, { onDelete: 'CASCADE' })
   event: Event;
 

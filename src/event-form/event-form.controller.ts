@@ -112,5 +112,28 @@ import { CreateGuestDto } from 'src/guests/dto/create-guest.dto';
     ) {
       return this.eventFormService.createPublicGuest(dto);
     }
+
+    @Patch(':eventId/public/max-guests')
+    @ApiOperation({ summary: 'Public формд зочдын дээд хэмжээ тохируулах' })
+    @ApiParam({ name: 'eventId', type: Number })
+    @ApiBody({
+      schema: {
+        type: 'object',
+        properties: {
+          maxGuests: {
+            type: 'number',
+            example: 100,
+            description: 'Нийт бүртгэгдэх зочдын дээд тоо',
+          },
+        },
+      },
+    })
+    @ApiResponse({ status: 200, description: 'maxGuests амжилттай шинэчлэгдлээ' })
+    updateMaxGuests(
+      @Param('eventId') eventId: number,
+      @Body() body: { maxGuests: number },
+    ) {
+      return this.eventFormService.updateMaxGuests(eventId, body.maxGuests);
+    }
 }
   

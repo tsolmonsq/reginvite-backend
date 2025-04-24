@@ -95,7 +95,6 @@ export class EventFormService {
     return form;
   }
 
-
   async updatePublicFields(eventId: number, fields: Partial<EventFormField>[]): Promise<EventForm> {
     let form = await this.formRepo.findOne({
       where: { event: Equal(eventId), type: Equal('public') },
@@ -139,6 +138,27 @@ export class EventFormService {
   async createPublicGuest(dto: CreateGuestDto): Promise<Guest> {
     const event = await this.eventRepo.findOne({ where: { id: dto.eventId } });
     if (!event) throw new NotFoundException('Event not found');
+
+    const form = await this.formRepo.findOne({
+      where: { event: Equal(dto.eventId), type: Equal('public') },
+    });
+
+    if (!form){
+      throw new NotFoundException('Public форм олдсонгүй');
+    }
+
+    if (form.max_guests) {
+      const currentGuestCount = await this.guestRepo.count({
+        where: {
+          event: { id: dto.eventId },
+          status: Equal('By form'),
+        },
+      });
+  
+      if (currentGuestCount >= form.max_guests) {
+        throw new Error(`${form.max_guests}) зочин хүрсэн байна.`);
+      }
+    }  
   
     const guest = this.guestRepo.create({
       first_name: dto.first_name,
@@ -150,5 +170,16 @@ export class EventFormService {
     });
   
     return this.guestRepo.save(guest);
+  }
+
+  async updateMaxGuests(eventId: number, maxGuests: number): Promise<EventForm> {
+    const form = await this.formRepo.findOne({
+      where: { event: Equal(eventId), type: Equal('public') },
+    });
+  
+    if (!form) throw new NotFoundException('Public форм олдсонгүй');
+  
+    form.max_guests = maxGuests;
+    return this.formRepo.save(form);
   }
 }
