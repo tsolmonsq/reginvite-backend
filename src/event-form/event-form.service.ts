@@ -41,15 +41,15 @@ export class EventFormService {
   }
 
   async getByEvent(eventId: number): Promise<EventForm> {
-    const form = await this.formRepo.findOne({
+    let form = await this.formRepo.findOne({
       where: { event: Equal(eventId) },
       relations: ['fields'],
     });
-
+  
     if (!form) {
-      throw new NotFoundException('Тухайн эвентийн форм олдсонгүй');
+      form = await this.createForEvent(eventId); 
     }
-
+  
     return form;
   }
 
