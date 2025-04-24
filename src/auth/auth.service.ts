@@ -25,7 +25,12 @@ export class AuthService {
     const user = this.userRepo.create({ ...dto, password: hashedPassword });
     const savedUser = await this.userRepo.save(user);
     
-    await this.organizerRepo.save({ user: savedUser });
+
+    const newOrganizer = this.organizerRepo.create({
+      user: { id: savedUser.id }, 
+    });
+    await this.organizerRepo.save(newOrganizer);
+
 
     const { password, ...result } = savedUser;
     return result;
