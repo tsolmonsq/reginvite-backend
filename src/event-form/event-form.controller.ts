@@ -136,7 +136,7 @@ import { CreateGuestDto } from 'src/guests/dto/create-guest.dto';
       return this.eventFormService.updateMaxGuests(eventId, body.maxGuests);
     }
 
-    @Patch(':eventId/settings')
+    @Patch(':eventId/public/settings')
     updateFormSettings(
       @Param('eventId') eventId: number,
       @Body() body: { max_guests?: number; close_at?: string; is_open?: boolean }
