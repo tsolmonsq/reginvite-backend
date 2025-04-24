@@ -20,7 +20,7 @@ export class EventFormService {
     private readonly eventRepo: Repository<Event>,
 
     @InjectRepository(Guest)
-    private readonly eventRepo: Repository<Event>,
+    private readonly guestRepo: Repository<Guest>,
   ) {}
 
   async createPublicForm(eventId: number): Promise<EventForm> {
@@ -151,5 +151,4 @@ export class EventFormService {
   
     return this.guestRepo.save(guest);
   }
-  
 }
