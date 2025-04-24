@@ -102,6 +102,13 @@ export class EventController {
     return this.eventService.findOne(id, req.user.id);
   }
 
+  @Get(':id/public')
+  @ApiTags('Public')
+  async getEventMeta(@Param('id', ParseIntPipe) id: number) {
+    const event = await this.eventService.getEventMeta(id);
+    return event;
+  }
+
   @Put(':id')
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')

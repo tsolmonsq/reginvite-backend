@@ -61,7 +61,6 @@ export class EventService {
     return savedEvent;
   }
   
-
   async findOne(id: number, userId: number) {
     const event = await this.eventRepo.findOne({
       where: { id },
@@ -80,6 +79,21 @@ export class EventService {
 
     return event;
   }
+
+  async getEventMeta(id: number) {
+    const event = await this.eventRepo.findOneBy({ id });
+  
+    if (!event) throw new NotFoundException('Event олдсонгүй');
+  
+    return {
+      id: event.id,
+      title: event.title,
+      description: event.description,
+      location: event.location,
+      start_time: event.start_time,
+      end_time: event.end_time,
+    };
+  }  
 
   async findAllByOrganizerId(
     organizerId: number,
