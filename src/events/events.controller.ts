@@ -32,7 +32,6 @@ import * as fs from 'fs';
 
 @ApiBearerAuth('access-token')
 @ApiTags('Events')
-@UseGuards(JwtAuthGuard)
 @Controller('events')
 export class EventController {
   constructor(
@@ -41,12 +40,12 @@ export class EventController {
   ) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('image', {
     storage: diskStorage({
       destination: (req, file, cb) => {
         const uploadPath = path.join(process.cwd(), 'event-images');
   
-        // Хавтас байхгүй бол үүсгэнэ
         if (!fs.existsSync(uploadPath)) {
           fs.mkdirSync(uploadPath, { recursive: true });
         }
@@ -98,7 +97,8 @@ export class EventController {
   }
     
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+  @UseGuards(JwtAuthGuard)
+  async findOne(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
     return this.eventService.findOne(id, req.user.id);
   }
 
@@ -110,6 +110,7 @@ export class EventController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('image'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -126,7 +127,8 @@ export class EventController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+  @UseGuards(JwtAuthGuard)
+  async remove(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
     return this.eventService.remove(id, req.user.id);
   }
 }
