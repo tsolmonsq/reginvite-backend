@@ -86,27 +86,18 @@ export class GuestsController {
 
   @Post('import-excel')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: './uploads',
-      filename: (req, file, cb) => {
-        const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        cb(null, `${unique}${extname(file.originalname)}`);
-      },
-    }),
-  }))
+  @UseInterceptors(FileInterceptor('file'))
   async importExcel(
     @UploadedFile() file: Express.Multer.File,
     @Body() body: ImportGuestExcelDto,
   ) {
     if (!file) throw new BadRequestException('Файл илгээгдээгүй байна');
 
-    const workbook = xlsx.readFile(file.path);
+    const workbook = xlsx.read(file.buffer, { type: 'buffer' }); // ← file.buffer ашиглана
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
 
     const rows: any[] = xlsx.utils.sheet_to_json(sheet);
-
     const errors: string[] = [];
 
     for (let i = 0; i < rows.length; i++) {
@@ -129,12 +120,10 @@ export class GuestsController {
       }
     }
 
-    fs.unlinkSync(file.path);
-
     if (errors.length > 0) {
       throw new BadRequestException(`Алдаатай мөрүүд:\n${errors.join('\n')}`);
     }
 
     return { message: 'Excel файл амжилттай боловсруулав' };
-  }
+    }
 }
