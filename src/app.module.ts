@@ -26,6 +26,7 @@ import { EventFormField } from './event-form/entities/event-form-field.entity';
 import { Template } from './template/entities/template.entity';
 import { TemplateModule } from './template/entities/template.module';
 import { ResponseModule } from './response/response.module';
+import { StaffModule } from './staff/staff.module';
 
 @Module({
   imports: [ 
@@ -66,7 +67,8 @@ import { ResponseModule } from './response/response.module';
     InvitationTemplateModule,
     EventFormModule,
     TemplateModule,
-    ResponseModule
+    ResponseModule,
+    StaffModule
   ],
   controllers: [AppController],
   providers: [AppService, OrganizersService],
